@@ -4,7 +4,23 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Welcome to the Dashboard</h1>
-    <p>You have successfully logged in!</p>
+    <h1>Welcome, <span th:text="${user.email}"></span>!</h1>
+
+    <div th:if="${!isInTeam}">
+        <h2>You are not part of a team yet!</h2>
+        <a href="/teams/create">Create a Team</a> or
+        <a href="/teams/join">Join an Existing Team</a>
+    </div>
+
+    <div th:if="${isInTeam}">
+        <h2>Your Team's Projects</h2>
+        <ul>
+            <li th:each="project : ${projects}">
+                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>
+            </li>
+        </ul>
+    </div>
+
+    <a href="/logout">Logout</a>
 </body>
 </html>

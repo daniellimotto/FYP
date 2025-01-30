@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Join Team</title>
+</head>
+<body>
+    <h1>Join an Existing Team</h1>
+    <form action="/teams/join" method="post">
+        <label for="teamId">Select a Team:</label>
+        <select id="teamId" name="teamId" required>
+            <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+        </select>
+        <button type="submit">Join Team</button>
+    </form>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
