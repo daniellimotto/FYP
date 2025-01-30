@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project List</title>
+</head>
+<body>
+    <h1>Your Projects</h1>
+    <a href="/projects/create">
+        <button>Create New Project</button>
+    </a>
+    <ul>
+        <li th:each="project : ${projects}">
+            <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>
+        </li>
+    </ul>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

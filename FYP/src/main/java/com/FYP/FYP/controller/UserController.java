@@ -1,5 +1,6 @@
 package com.FYP.FYP.controller;
 
+import com.FYP.FYP.model.Team;
 import com.FYP.FYP.model.User;
 import com.FYP.FYP.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -20,9 +23,9 @@ public class UserController {
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         if (session.getAttribute("loggedInUser") != null) {
-            return "redirect:/dashboard"; 
+            return "redirect:/dashboard";
         }
-        return "login"; 
+        return "login";
     }
 
     @PostMapping("/login")
@@ -32,10 +35,10 @@ public class UserController {
         boolean isValid = userService.validateUser(email, password);
 
         if (isValid) {
-            return "redirect:/dashboard"; 
+            return "redirect:/dashboard";
         } else {
             model.addAttribute("error", "Invalid email or password.");
-            return "login"; 
+            return "login";
         }
     }
 
@@ -52,16 +55,17 @@ public class UserController {
         model.addAttribute("user", loggedInUser);
 
         if (isInTeam) {
-            model.addAttribute("projects", loggedInUser.getTeam().getProjects());
+            Team userTeam = loggedInUser.getTeam();
+            List<?> projects = (userTeam.getProjects() != null) ? userTeam.getProjects() : List.of();
+            model.addAttribute("projects", projects);
         }
 
-        return "dashboard"; 
+        return "dashboard";
     }
-
 
     @GetMapping("/logout")
     public String logout() {
         session.invalidate();
-        return "redirect:/login"; 
+        return "redirect:/login";
     }
 }

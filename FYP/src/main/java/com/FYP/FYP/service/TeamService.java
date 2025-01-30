@@ -22,25 +22,20 @@ public class TeamService {
     @Autowired
     private UserService userService;
 
-    /**
-     * Creates a new team.
-     */
     public Team createTeam(String name) {
         Team team = new Team();
         team.setName(name);
         return teamRepository.save(team);
     }
 
-    /**
-     * Gets all teams.
-     */
+    public Optional<Team> getTeamById(Long teamId) {
+        return teamRepository.findById(teamId);
+    }
+
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
 
-    /**
-     * Adds the logged-in user to a team.
-     */
     public boolean joinTeam(Long teamId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
         User loggedInUser = userService.getLoggedInUser();

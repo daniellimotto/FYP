@@ -13,7 +13,13 @@
     </div>
 
     <div th:if="${isInTeam}">
-        <h2>Your Team's Projects</h2>
+        <h2>Your Projects</h2>
+        <a href="/projects/create">
+            <button>Create New Project</button>
+        </a>
+        
+        <p th:if="${projects == null or projects.isEmpty()}">No projects available. Create one!</p>
+
         <ul>
             <li th:each="project : ${projects}">
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>

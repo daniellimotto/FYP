@@ -17,10 +17,9 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<User> members;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<Project> projects;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Project> projects;    
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
