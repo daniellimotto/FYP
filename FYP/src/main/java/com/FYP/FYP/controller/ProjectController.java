@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/projects")
@@ -24,6 +25,7 @@ public class ProjectController {
     @GetMapping
     public String listProjects(Model model) {
         User loggedInUser = userService.getLoggedInUser();
+
         if (loggedInUser == null || loggedInUser.getTeam() == null) {
             return "redirect:/dashboard";
         }
@@ -41,25 +43,33 @@ public class ProjectController {
 
     @PostMapping("/create")
     public String createProject(@RequestParam String name,
-                                @RequestParam String description) {
+                                @RequestParam String description,
+                                Model model) {
         User loggedInUser = userService.getLoggedInUser();
+
         if (loggedInUser == null || loggedInUser.getTeam() == null) {
             return "redirect:/dashboard";
         }
 
-        projectService.createProject(name, description, loggedInUser.getTeam().getId());
+        Project newProject = projectService.createProject(name, description, loggedInUser.getTeam().getId());
+
+        if (newProject == null) {
+            model.addAttribute("error", "A project with this name already exists in your team.");
+            return "projects/create"; 
+        }
+
         return "redirect:/projects";
     }
-    
+
     @GetMapping("/{id}")
     public String showProjectDetails(@PathVariable Long id, Model model) {
         Optional<Project> projectOpt = projectService.getProjectById(id);
 
         if (projectOpt.isEmpty()) {
-            return "redirect:/dashboard"; // Redirect if project doesn't exist
+            return "redirect:/projects"; 
         }
 
         model.addAttribute("project", projectOpt.get());
-        return "projects/details"; // Ensure this file exists in templates/projects/details.html
+        return "projects/details"; 
     }
 }

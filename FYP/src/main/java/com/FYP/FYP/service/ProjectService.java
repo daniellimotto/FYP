@@ -3,7 +3,7 @@ package com.FYP.FYP.service;
 import com.FYP.FYP.model.Project;
 import com.FYP.FYP.model.Team;
 import com.FYP.FYP.repository.ProjectRepository;
-import com.FYP.FYP.service.TeamService;
+import com.FYP.FYP.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +23,26 @@ public class ProjectService {
         Optional<Team> teamOpt = teamService.getTeamById(teamId);
 
         if (teamOpt.isPresent()) {
+            Team team = teamOpt.get();
+
+            boolean exists = team.getProjects().stream()
+                    .anyMatch(p -> p.getName().equalsIgnoreCase(name));
+
+            if (exists) {
+                return null; 
+            }
+
             Project project = new Project();
             project.setName(name);
             project.setDescription(description);
-            project.setTeam(teamOpt.get());
+            project.setTeam(team);
             return projectRepository.save(project);
         }
         return null;
+    }
+
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
     }
 
     public List<Project> getProjectsByTeam(Long teamId) {
