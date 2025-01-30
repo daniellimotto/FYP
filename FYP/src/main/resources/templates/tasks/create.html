@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Task</title>
+</head>
+<body>
+    <h1>Create a New Task</h1>
+    <form th:action="@{/tasks/create/{projectId}(projectId=${projectId})}" method="post">
+        <input type="hidden" name="projectId" th:value="${projectId}">
+
+        <label for="title">Task Title:</label>
+        <input type="text" id="title" name="title" required>
+        <br>
+
+        <label for="description">Task Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        <br>
+
+        <button type="submit">Create Task</button>
+    </form>
+    
+    <a th:href="@{/projects/{projectId}(projectId=${projectId})}">Back to Project</a>
+</body>
+</html>

@@ -1,8 +1,10 @@
 package com.FYP.FYP.controller;
 
 import com.FYP.FYP.model.Project;
+import com.FYP.FYP.model.Task;
 import com.FYP.FYP.model.User;
 import com.FYP.FYP.service.ProjectService;
+import com.FYP.FYP.service.TaskService;
 import com.FYP.FYP.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,9 @@ public class ProjectController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TaskService taskService;
 
     @GetMapping
     public String listProjects(Model model) {
@@ -66,10 +71,15 @@ public class ProjectController {
         Optional<Project> projectOpt = projectService.getProjectById(id);
 
         if (projectOpt.isEmpty()) {
-            return "redirect:/projects"; 
+            return "redirect:/projects";
         }
 
-        model.addAttribute("project", projectOpt.get());
-        return "projects/details"; 
+        Project project = projectOpt.get();
+        List<Task> tasks = taskService.getTasksByProject(id);
+
+        model.addAttribute("project", project);
+        model.addAttribute("tasks", tasks);
+
+        return "projects/details";
     }
 }

@@ -7,9 +7,19 @@
     <h1>Project: <span th:text="${project.name}"></span></h1>
     <p><strong>Description:</strong> <span th:text="${project.description}"></span></p>
 
-    <h2>Manage Tasks</h2>
-    <a th:href="@{/tasks/{projectId}(projectId=${project.id})}">View Tasks</a>
-    
+    <h2>Tasks</h2>
+    <a th:href="@{/tasks/create/{projectId}(projectId=${project.id})}">
+        <button>Create New Task</button>
+    </a>
+
+    <p th:if="${tasks == null or tasks.isEmpty()}">No tasks available. Create one!</p>
+
+    <ul>
+        <li th:each="task : ${tasks}">
+            <span th:text="${task.title}"></span> - <span th:text="${task.status}"></span>
+        </li>
+    </ul>
+
     <a href="/dashboard">Back to Dashboard</a>
 </body>
 </html>
