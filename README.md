@@ -51,7 +51,7 @@ Ensure you have the following installed:
 3. **Team Collaboration**: The built-in messaging system allows seamless communication.
 4. **Receive Notifications**: Get alerts for task updates, new assignments, and project changes.
 
-## Future Enhancements
+## Enhancements
 
 - Notification System: Ensures updates are communicated instantly.
 - User Roles & Permissions: Differentiates access levels for team members.
