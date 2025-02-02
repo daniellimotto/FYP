@@ -56,7 +56,8 @@ Ensure you have the following installed:
 - Notification System: Ensures updates are communicated instantly.
 - User Roles & Permissions: Differentiates access levels for team members.
 - Chat System and Chat Translating System: Supports real-time team discussions within the system and chat translation system.
-  ## Contributors
+
+## Contributors
 
 * **Daniel Limotto** (2140449)\
   Supervisor: **Soon Phei Tin**
