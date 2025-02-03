@@ -4,8 +4,9 @@
 
 Effective communication is crucial for Agile project management, yet its complexity often impacts project success. This system enhances communication with improved task tracking, real-time updates, and notifications to ensure clarity and minimize delays. Built with **Spring Boot (MVC architecture)** for backend development and **MySQL** for data management, it incorporates a structured and scalable approach. The iterative design focuses on usability, transparency, and adaptability to streamline Agile workflows.
 
-## Features so Far:
+## So Far:
 
+- **Prototype**: https://www.figma.com/proto/W9o6ujU4pfzn7jLDu1M9yb/Untitled?node-id=13-207&p=f&t=tw6qBqeCTJB7XY5e-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=13%3A207
 - **Real-time Task Management**: Allows users to assign and track tasks efficiently.
 - **Project Tracking Dashboard**: Provides an overview of project status and progress.
 
