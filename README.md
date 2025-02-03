@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Agile Project Management System** is designed to enhance communication among team members in Agile environments. The system leverages **Spring Boot (MVC architecture)** for backend development and **Figma** for UI/UX design.
+Effective communication is crucial for Agile project management, yet its complexity often impacts project success. This system enhances communication with improved task tracking, real-time updates, and notifications to ensure clarity and minimize delays. Built with **Spring Boot (MVC architecture)** for backend development and **MySQL** for data management, it incorporates a structured and scalable approach. The iterative design focuses on usability, transparency, and adaptability to streamline Agile workflows.
 
 ## Features so Far:
 
