@@ -10,15 +10,20 @@
 
         <label for="title">Task Title:</label>
         <input type="text" id="title" name="title" required>
-        <br>
+        <br><br>
 
         <label for="description">Task Description:</label>
         <textarea id="description" name="description" required></textarea>
-        <br>
+        <br><br>
+
+        <label for="dueDate">Due Date:</label>
+        <input type="date" id="dueDate" name="dueDate" required>
+        <br><br>
 
         <button type="submit">Create Task</button>
     </form>
-    
+
+    <br>
     <a th:href="@{/projects/{projectId}(projectId=${projectId})}">Back to Project</a>
 </body>
 </html>

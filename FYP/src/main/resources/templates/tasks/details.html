@@ -6,6 +6,11 @@
 <body>
     <h1>Task: <span th:text="${task.title}"></span></h1>
 
+    <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${task.status}"></span></p>
+    <p><strong>Deadline:</strong> <span th:text="${task.dueDate}"></span></p>
+    <p><strong>Assigned To:</strong> <span th:if="${task.assignedTo != null}" th:text="${task.assignedTo.email}"></span></p>
+
     <h2>Edit Task</h2>
     <form th:action="@{/tasks/update/{taskId}(taskId=${task.id})}" method="post">
         <label for="description">Description:</label>
@@ -20,6 +25,10 @@
         </select>
         <br>
 
+        <label for="dueDate">Deadline:</label>
+        <input type="date" id="dueDate" name="dueDate" th:value="${#dates.format(task.dueDate, 'yyyy-MM-dd')}" required>        
+        <br>
+
         <label for="assignedTo">Assign To:</label>
         <select id="assignedTo" name="assignedTo">
             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}" 
@@ -31,6 +40,12 @@
         <button type="submit">Update Task</button>
     </form>
 
+    <h2>Delete Task</h2>
+    <form th:action="@{/tasks/delete/{taskId}(taskId=${task.id})}" method="post">
+        <button type="submit" style="color: red;">Delete Task</button>
+    </form>
+
+    <br>
     <a th:href="@{/projects/{projectId}(projectId=${task.project.id})}">Back to Project</a>
 </body>
 </html>

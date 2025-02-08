@@ -23,6 +23,13 @@ public class Task {
     @Temporal(TemporalType.DATE)
     private Date dueDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false) // Ensures the value is only set once
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
@@ -31,6 +38,19 @@ public class Task {
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
+    // Automatically set timestamps before saving
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -69,6 +89,14 @@ public class Task {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
     public Project getProject() {

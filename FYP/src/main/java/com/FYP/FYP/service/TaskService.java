@@ -10,6 +10,7 @@ import com.FYP.FYP.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
 
-    public Task createTask(String title, String description, Long projectId) {
+    public Task createTask(String title, String description, Date dueDate, Long projectId) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
 
         if (projectOpt.isEmpty()) {
@@ -36,6 +37,7 @@ public class TaskService {
         task.setTitle(title);
         task.setDescription(description);
         task.setStatus(TaskStatus.TO_DO);
+        task.setDueDate(dueDate);
         task.setProject(projectOpt.get());
 
         return taskRepository.save(task);
@@ -61,7 +63,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long taskId, String description, TaskStatus status, Long assignedTo) {
+    public Task updateTask(Long taskId, String description, TaskStatus status, Long assignedTo, Date dueDate) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
 
         if (taskOpt.isEmpty()) {
@@ -71,6 +73,7 @@ public class TaskService {
         Task task = taskOpt.get();
         task.setDescription(description);
         task.setStatus(status);
+        task.setDueDate(dueDate);
 
         if (assignedTo != null) {
             Optional<User> userOpt = userRepository.findById(assignedTo);
@@ -78,5 +81,16 @@ public class TaskService {
         }
 
         return taskRepository.save(task);
+    }
+
+    public boolean deleteTask(Long taskId) {
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+
+        if (taskOpt.isPresent()) {
+            taskRepository.deleteById(taskId);
+            return true;
+        }
+
+        return false;
     }
 }
