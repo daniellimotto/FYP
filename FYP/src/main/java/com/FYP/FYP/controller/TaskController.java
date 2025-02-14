@@ -28,16 +28,12 @@ public class TaskController {
     @GetMapping("/details/{taskId}")
     public String showTaskDetails(@PathVariable Long taskId, Model model) {
         Optional<Task> taskOpt = taskService.getTaskById(taskId);
-
         if (taskOpt.isEmpty()) {
-            return "redirect:/dashboard"; // Redirect if task is not found
+            return "redirect:/dashboard";
         }
 
         Task task = taskOpt.get();
-        List<User> users = userService.getAllUsers(); // Fetch all users for assignment
-
         model.addAttribute("task", task);
-        model.addAttribute("users", users);
         return "tasks/details";
     }
 
@@ -48,34 +44,47 @@ public class TaskController {
     }
 
     @PostMapping("/create/{projectId}")
-public String createTask(@PathVariable Long projectId,
-                         @RequestParam String title,
-                         @RequestParam String description,
-                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
-    taskService.createTask(title, description, dueDate, projectId);
-    return "redirect:/projects/" + projectId;
-}
+    public String createTask(@PathVariable Long projectId,
+                            @RequestParam String title,
+                            @RequestParam String description,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
+        taskService.createTask(title, description, dueDate, projectId);
+        return "redirect:/projects/" + projectId;
+    }
 
-@PostMapping("/update/{taskId}")
-public String updateTask(@PathVariable Long taskId,
-                         @RequestParam String description,
-                         @RequestParam TaskStatus status,
-                         @RequestParam Long assignedTo,
-                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
-    taskService.updateTask(taskId, description, status, assignedTo, dueDate);
-    return "redirect:/tasks/details/" + taskId;
-}
+    @GetMapping("/edit/{taskId}")
+    public String editTask(@PathVariable Long taskId, Model model) {
+        Optional<Task> taskOpt = taskService.getTaskById(taskId);
+        if (taskOpt.isEmpty()) {
+            return "redirect:/dashboard";
+        }
+
+        Task task = taskOpt.get();
+        List<User> users = userService.getAllUsers();
+
+        model.addAttribute("task", task);
+        model.addAttribute("users", users);
+        return "tasks/edit";
+    }
+
+    @PostMapping("/update/{taskId}")
+    public String updateTask(@PathVariable Long taskId,
+                            @RequestParam String description,
+                            @RequestParam TaskStatus status,
+                            @RequestParam Long assignedTo,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
+        taskService.updateTask(taskId, description, status, assignedTo, dueDate);
+        return "redirect:/tasks/details/" + taskId;
+    }
 
     @PostMapping("/delete/{taskId}")
     public String deleteTask(@PathVariable Long taskId) {
         Optional<Task> taskOpt = taskService.getTaskById(taskId);
-
         if (taskOpt.isPresent()) {
             Long projectId = taskOpt.get().getProject().getId();
             taskService.deleteTask(taskId);
             return "redirect:/projects/" + projectId;
         }
-
         return "redirect:/dashboard";
     }
 }

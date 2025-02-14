@@ -11,36 +11,11 @@
     <p><strong>Deadline:</strong> <span th:text="${task.dueDate}"></span></p>
     <p><strong>Assigned To:</strong> <span th:if="${task.assignedTo != null}" th:text="${task.assignedTo.email}"></span></p>
 
-    <h2>Edit Task</h2>
-    <form th:action="@{/tasks/update/{taskId}(taskId=${task.id})}" method="post">
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" th:text="${task.description}" required></textarea>
-        <br>
+    <br>
+    <a th:href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
+        <button>Edit Task</button>
+    </a>
 
-        <label for="status">Status:</label>
-        <select id="status" name="status">
-            <option value="TO_DO" th:selected="${task.status == 'TO_DO'}">To Do</option>
-            <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
-            <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
-        </select>
-        <br>
-
-        <label for="dueDate">Deadline:</label>
-        <input type="date" id="dueDate" name="dueDate" th:value="${#dates.format(task.dueDate, 'yyyy-MM-dd')}" required>        
-        <br>
-
-        <label for="assignedTo">Assign To:</label>
-        <select id="assignedTo" name="assignedTo">
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}" 
-                th:selected="${task.assignedTo != null && task.assignedTo.id == user.id}">
-            </option>
-        </select>
-        <br>
-
-        <button type="submit">Update Task</button>
-    </form>
-
-    <h2>Delete Task</h2>
     <form th:action="@{/tasks/delete/{taskId}(taskId=${task.id})}" method="post">
         <button type="submit" style="color: red;">Delete Task</button>
     </form>
