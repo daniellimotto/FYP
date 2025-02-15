@@ -26,6 +26,9 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public Task createTask(String title, String description, Date dueDate, Long projectId) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
 
@@ -77,7 +80,14 @@ public class TaskService {
 
         if (assignedTo != null) {
             Optional<User> userOpt = userRepository.findById(assignedTo);
-            userOpt.ifPresent(task::setAssignedTo);
+            userOpt.ifPresent(user -> {
+                task.setAssignedTo(user);
+                notificationService.createNotification(user, "You have been assigned to a task: " + task.getTitle());
+            });
+        }
+
+        if (task.getAssignedTo() != null) {
+            notificationService.createNotification(task.getAssignedTo(), "Task updated: " + task.getTitle());
         }
 
         return taskRepository.save(task);

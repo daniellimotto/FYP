@@ -2,6 +2,8 @@ package com.FYP.FYP.controller;
 
 import com.FYP.FYP.model.Team;
 import com.FYP.FYP.model.User;
+import com.FYP.FYP.model.Notification;
+import com.FYP.FYP.service.NotificationService;
 import com.FYP.FYP.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private HttpSession session;
@@ -59,6 +64,9 @@ public class UserController {
             List<?> projects = (userTeam.getProjects() != null) ? userTeam.getProjects() : List.of();
             model.addAttribute("projects", projects);
         }
+
+        List<Notification> notifications = notificationService.getUnreadNotifications(loggedInUser);
+        model.addAttribute("notifications", notifications);
 
         return "dashboard";
     }
