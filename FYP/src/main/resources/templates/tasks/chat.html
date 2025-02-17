@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Chat</title>
+</head>
+<body>
+    <h1>Task Chat</h1>
+
+    <ul>
+        <li th:each="message : ${messages}">
+            <strong th:text="${message.user.email}"></strong>: 
+            <span th:text="${message.message}"></span>
+            <small th:text="${#dates.format(message.sentAt, 'yyyy-MM-dd HH:mm')}"></small>
+        </li>
+    </ul>
+
+    <form th:action="@{/tasks/chat/{taskId}(taskId=${taskId})}" method="post">
+        <input type="text" name="message" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <br>
+    <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+</body>
+</html>

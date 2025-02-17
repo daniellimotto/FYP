@@ -11,6 +11,10 @@
     <p><strong>Deadline:</strong> <span th:text="${task.dueDate}"></span></p>
     <p><strong>Assigned To:</strong> <span th:if="${task.assignedTo != null}" th:text="${task.assignedTo.email}"></span></p>
 
+    <a th:href="@{/tasks/chat/{taskId}(taskId=${task.id})}">
+        <button>Open Chat</button>
+    </a>    
+
     <br>
     <a th:href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
         <button>Edit Task</button>

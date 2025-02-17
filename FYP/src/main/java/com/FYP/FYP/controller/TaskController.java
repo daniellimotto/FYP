@@ -2,7 +2,9 @@ package com.FYP.FYP.controller;
 
 import com.FYP.FYP.model.Task;
 import com.FYP.FYP.model.TaskStatus;
+import com.FYP.FYP.model.ChatMessage;
 import com.FYP.FYP.model.User;
+import com.FYP.FYP.service.ChatService;
 import com.FYP.FYP.service.TaskService;
 import com.FYP.FYP.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class TaskController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ChatService chatService;
 
     @GetMapping("/details/{taskId}")
     public String showTaskDetails(@PathVariable Long taskId, Model model) {
@@ -86,5 +91,21 @@ public class TaskController {
             return "redirect:/projects/" + projectId;
         }
         return "redirect:/dashboard";
+    }
+
+    @GetMapping("/chat/{taskId}")
+    public String showChat(@PathVariable Long taskId, Model model) {
+        List<ChatMessage> messages = chatService.getMessagesByTask(taskId);
+        model.addAttribute("messages", messages);
+        model.addAttribute("taskId", taskId);
+        return "tasks/chat"; // Show chat page
+    }
+
+    @PostMapping("/chat/{taskId}")
+    public String sendMessage(@PathVariable Long taskId,
+                              @RequestParam String message) {
+        User loggedInUser = userService.getLoggedInUser();
+        chatService.saveMessage(taskId, loggedInUser, message);
+        return "redirect:/tasks/chat/" + taskId;
     }
 }
