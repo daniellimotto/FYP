@@ -9,7 +9,7 @@ public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
@@ -31,8 +31,8 @@ public class ChatMessage {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public Task getTask() { return task; }
     public void setTask(Task task) { this.task = task; }

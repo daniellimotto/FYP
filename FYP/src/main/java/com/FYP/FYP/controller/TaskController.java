@@ -31,7 +31,7 @@ public class TaskController {
     private ChatService chatService;
 
     @GetMapping("/details/{taskId}")
-    public String showTaskDetails(@PathVariable Long taskId, Model model) {
+    public String showTaskDetails(@PathVariable int taskId, Model model) {
         Optional<Task> taskOpt = taskService.getTaskById(taskId);
         if (taskOpt.isEmpty()) {
             return "redirect:/dashboard";
@@ -43,13 +43,13 @@ public class TaskController {
     }
 
     @GetMapping("/create/{projectId}")
-    public String showCreateTaskForm(@PathVariable Long projectId, Model model) {
+    public String showCreateTaskForm(@PathVariable int projectId, Model model) {
         model.addAttribute("projectId", projectId);
         return "tasks/create";
     }
 
     @PostMapping("/create/{projectId}")
-    public String createTask(@PathVariable Long projectId,
+    public String createTask(@PathVariable int projectId,
                             @RequestParam String title,
                             @RequestParam String description,
                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
@@ -58,7 +58,7 @@ public class TaskController {
     }
 
     @GetMapping("/edit/{taskId}")
-    public String editTask(@PathVariable Long taskId, Model model) {
+    public String editTask(@PathVariable int taskId, Model model) {
         Optional<Task> taskOpt = taskService.getTaskById(taskId);
         if (taskOpt.isEmpty()) {
             return "redirect:/dashboard";
@@ -73,20 +73,20 @@ public class TaskController {
     }
 
     @PostMapping("/update/{taskId}")
-    public String updateTask(@PathVariable Long taskId,
+    public String updateTask(@PathVariable int taskId,
                             @RequestParam String description,
                             @RequestParam TaskStatus status,
-                            @RequestParam Long assignedTo,
+                            @RequestParam int assignedTo,
                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
         taskService.updateTask(taskId, description, status, assignedTo, dueDate);
         return "redirect:/tasks/details/" + taskId;
     }
 
     @PostMapping("/delete/{taskId}")
-    public String deleteTask(@PathVariable Long taskId) {
+    public String deleteTask(@PathVariable int taskId) {
         Optional<Task> taskOpt = taskService.getTaskById(taskId);
         if (taskOpt.isPresent()) {
-            Long projectId = taskOpt.get().getProject().getId();
+            int projectId = taskOpt.get().getProject().getId();
             taskService.deleteTask(taskId);
             return "redirect:/projects/" + projectId;
         }
@@ -94,7 +94,7 @@ public class TaskController {
     }
 
     @GetMapping("/chat/{taskId}")
-    public String showChat(@PathVariable Long taskId, Model model) {
+    public String showChat(@PathVariable int taskId, Model model) {
         List<ChatMessage> messages = chatService.getMessagesByTask(taskId);
         model.addAttribute("messages", messages);
         model.addAttribute("taskId", taskId);
@@ -102,7 +102,7 @@ public class TaskController {
     }
 
     @PostMapping("/chat/{taskId}")
-    public String sendMessage(@PathVariable Long taskId,
+    public String sendMessage(@PathVariable int taskId,
                               @RequestParam String message) {
         User loggedInUser = userService.getLoggedInUser();
         chatService.saveMessage(taskId, loggedInUser, message);

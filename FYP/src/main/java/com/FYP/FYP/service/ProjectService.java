@@ -19,7 +19,7 @@ public class ProjectService {
     @Autowired
     private TeamService teamService;
 
-    public Project createProject(String name, String description, Long teamId) {
+    public Project createProject(String name, String description, int teamId) {
         Optional<Team> teamOpt = teamService.getTeamById(teamId);
 
         if (teamOpt.isPresent()) {
@@ -41,11 +41,11 @@ public class ProjectService {
         return null;
     }
 
-    public Optional<Project> getProjectById(Long id) {
+    public Optional<Project> getProjectById(int id) {
         return projectRepository.findById(id);
     }
 
-    public List<Project> getProjectsByTeam(Long teamId) {
+    public List<Project> getProjectsByTeam(int teamId) {
         return projectRepository.findByTeamId(teamId);
     }
 }

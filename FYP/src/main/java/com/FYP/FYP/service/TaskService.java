@@ -29,7 +29,7 @@ public class TaskService {
     @Autowired
     private NotificationService notificationService;
 
-    public Task createTask(String title, String description, Date dueDate, Long projectId) {
+    public Task createTask(String title, String description, Date dueDate, int projectId) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
 
         if (projectOpt.isEmpty()) {
@@ -46,15 +46,15 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public List<Task> getTasksByProject(Long projectId) {
+    public List<Task> getTasksByProject(int projectId) {
         return taskRepository.findByProjectId(projectId);
     }
 
-    public Optional<Task> getTaskById(Long taskId) {
+    public Optional<Task> getTaskById(int taskId) {
         return taskRepository.findById(taskId);
     }
 
-    public Task updateTaskStatus(Long taskId, TaskStatus status) {
+    public Task updateTaskStatus(int taskId, TaskStatus status) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
 
         if (taskOpt.isEmpty()) {
@@ -66,7 +66,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTask(Long taskId, String description, TaskStatus status, Long assignedTo, Date dueDate) {
+    public Task updateTask(int taskId, String description, TaskStatus status, Integer assignedTo, Date dueDate) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
 
         if (taskOpt.isEmpty()) {
@@ -93,7 +93,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public boolean deleteTask(Long taskId) {
+    public boolean deleteTask(int taskId) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
 
         if (taskOpt.isPresent()) {

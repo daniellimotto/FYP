@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
+public interface ChatRepository extends JpaRepository<ChatMessage, Integer> {
     List<ChatMessage> findByTaskOrderBySentAtAsc(Task task);
 }

@@ -67,7 +67,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public String showProjectDetails(@PathVariable Long id, Model model) {
+    public String showProjectDetails(@PathVariable int id, Model model) {
         Optional<Project> projectOpt = projectService.getProjectById(id);
 
         if (projectOpt.isEmpty()) {

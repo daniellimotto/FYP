@@ -28,7 +28,7 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public Optional<Team> getTeamById(Long teamId) {
+    public Optional<Team> getTeamById(int teamId) {
         return teamRepository.findById(teamId);
     }
 
@@ -36,7 +36,7 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-    public boolean joinTeam(Long teamId) {
+    public boolean joinTeam(int teamId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
         User loggedInUser = userService.getLoggedInUser();
 

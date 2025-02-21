@@ -40,7 +40,7 @@ public class TeamController {
     }
 
     @PostMapping("/join")
-    public String joinTeam(@RequestParam Long teamId) {
+    public String joinTeam(@RequestParam int teamId) {
         boolean success = teamService.joinTeam(teamId);
         return success ? "redirect:/dashboard" : "redirect:/teams/join?error=true";
     }

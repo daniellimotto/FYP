@@ -20,12 +20,12 @@ public class ChatService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<ChatMessage> getMessagesByTask(Long taskId) {
+    public List<ChatMessage> getMessagesByTask(int taskId) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
         return taskOpt.map(chatRepository::findByTaskOrderBySentAtAsc).orElse(List.of());
     }
 
-    public void saveMessage(Long taskId, User user, String message) {
+    public void saveMessage(int taskId, User user, String message) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
         if (taskOpt.isPresent()) {
             ChatMessage chatMessage = new ChatMessage();
