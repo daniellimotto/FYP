@@ -33,11 +33,10 @@
     
         stompClient.connect({}, function(frame) {
             console.log("Connected: " + frame);
-            stompClient.subscribe("/topic/chat", function(message) {
+            stompClient.subscribe("/topic/chat/" + taskId, function(message) {
                 console.log("message received");
                 var messageBody = JSON.parse(message.body);
                 
-                // Ensure user and timestamp are displayed
                 var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
                 var formattedTime = messageBody.sentAt ? new Date(messageBody.sentAt).toLocaleString() : "";
     

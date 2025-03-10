@@ -36,7 +36,7 @@ public class ChatWebSocketController {
     }
 
 @MessageMapping("/chat")
-@SendTo("/topic/chat")
+
 public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
     if (chatMessage.getTask() == null || chatMessage.getUser() == null) {
         throw new IllegalArgumentException("Task or User is missing in the message payload");
@@ -59,7 +59,7 @@ public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
     responseMessage.setUser(user);
     responseMessage.setMessage(chatMessage.getMessage());
     responseMessage.setSentAt(new Date());
-    // messagingTemplate.convertAndSend("/topic/chat", responseMessage);
+    messagingTemplate.convertAndSend("/topic/chat/" + taskId, responseMessage);
     return responseMessage;
 }
 
