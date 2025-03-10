@@ -3,6 +3,8 @@ package com.FYP.FYP.model;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -21,6 +23,7 @@ public class Project {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks; 
 

@@ -1,5 +1,6 @@
 package com.FYP.FYP.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -14,9 +15,13 @@ public class Team {
     @Column(nullable = false, unique = true)
     private String name;
 
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<User> members;
 
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Project> projects;    
 

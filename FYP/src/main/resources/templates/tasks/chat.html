@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Task Chat</title>
+    <script src="https://cdn.jsdelivr.net/sockjs/1.1.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
     <h1>Task Chat</h1>
 
-    <ul>
+    <ul id="chatMessages">
         <li th:each="message : ${messages}">
             <strong th:text="${message.user.email}"></strong>: 
             <span th:text="${message.message}"></span>
@@ -14,12 +17,51 @@
         </li>
     </ul>
 
-    <form th:action="@{/tasks/chat/{taskId}(taskId=${taskId})}" method="post">
-        <input type="text" name="message" required>
+    <form onsubmit="sendMessage(event)">
+        <input type="text" id="messageInput" required>
         <button type="submit">Send</button>
     </form>
 
     <br>
     <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+
+    <script>
+        var taskId = "[[${taskId}]]";
+        var userId = "[[${user.id}]]";
+        var socket = new SockJS('http://localhost:8080/ws');
+        var stompClient = Stomp.over(socket);
+    
+        stompClient.connect({}, function(frame) {
+            console.log("Connected: " + frame);
+            stompClient.subscribe("/topic/chat", function(message) {
+                console.log("message received");
+                var messageBody = JSON.parse(message.body);
+                
+                // Ensure user and timestamp are displayed
+                var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
+                var formattedTime = messageBody.sentAt ? new Date(messageBody.sentAt).toLocaleString() : "";
+    
+                var chatList = document.getElementById("chatMessages");
+                var newMessage = document.createElement("li");
+                newMessage.innerHTML = "<strong>" + senderEmail + ":</strong> " + messageBody.message +
+                    " <small>(" + formattedTime + ")</small>";
+                chatList.appendChild(newMessage);
+            });
+        });
+    
+        function sendMessage(event) {
+            event.preventDefault();
+            var messageContent = document.getElementById("messageInput").value;
+    
+            if (messageContent.trim() !== "") {
+                stompClient.send("/app/chat", {}, JSON.stringify({
+                    message: messageContent,
+                    task: { id: taskId },
+                    user: { id: userId }
+                }));
+                document.getElementById("messageInput").value = "";
+            }
+        }
+    </script>
 </body>
 </html>

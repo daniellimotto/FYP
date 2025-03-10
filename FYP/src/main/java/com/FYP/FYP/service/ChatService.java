@@ -27,12 +27,14 @@ public class ChatService {
 
     public void saveMessage(int taskId, User user, String message) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        if (taskOpt.isPresent()) {
+        System.out.println("saving message in service");
+        if (taskOpt.isPresent() && user != null) {
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setTask(taskOpt.get());
             chatMessage.setUser(user);
             chatMessage.setMessage(message);
             chatRepository.save(chatMessage);
-        }
+        } 
     }
+    
 }

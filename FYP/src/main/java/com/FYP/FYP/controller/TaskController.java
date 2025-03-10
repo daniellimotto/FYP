@@ -95,16 +95,26 @@ public class TaskController {
 
     @GetMapping("/chat/{taskId}")
     public String showChat(@PathVariable int taskId, Model model) {
+        User loggedInUser = userService.getLoggedInUser();
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
         List<ChatMessage> messages = chatService.getMessagesByTask(taskId);
         model.addAttribute("messages", messages);
         model.addAttribute("taskId", taskId);
-        return "tasks/chat"; // Show chat page
+        model.addAttribute("user", loggedInUser);
+        return "tasks/chat";
     }
 
     @PostMapping("/chat/{taskId}")
     public String sendMessage(@PathVariable int taskId,
                               @RequestParam String message) {
         User loggedInUser = userService.getLoggedInUser();
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        
         chatService.saveMessage(taskId, loggedInUser, message);
         return "redirect:/tasks/chat/" + taskId;
     }

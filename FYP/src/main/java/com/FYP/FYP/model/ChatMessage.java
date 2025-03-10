@@ -25,9 +25,15 @@ public class ChatMessage {
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentAt;
 
+    public ChatMessage() {
+        this.sentAt = new Date();
+    }
+
     @PrePersist
     protected void onCreate() {
-        sentAt = new Date();
+        if (sentAt == null) { 
+            sentAt = new Date();
+        }
     }
 
     // Getters and Setters
@@ -44,4 +50,5 @@ public class ChatMessage {
     public void setMessage(String message) { this.message = message; }
 
     public Date getSentAt() { return sentAt; }
+    public void setSentAt(Date sentAt) { this.sentAt = sentAt; }
 }
