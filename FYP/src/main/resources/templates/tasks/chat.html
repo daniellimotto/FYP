@@ -5,25 +5,93 @@
     <title>Task Chat</title>
     <script src="https://cdn.jsdelivr.net/sockjs/1.1.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .chat-bubble {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        .chat-item {
+            margin-bottom: 10px;
+            list-style: none;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+        .translated-text {
+            color: blue;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 5px;
+            display: none;
+        }
+        .message-header {
+            font-weight: bold;
+        }
+        .message-time {
+            font-size: 0.8em;
+            color: gray;
+            margin-left: 10px;
+        }
+        .translation-section {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
-    <h1>Task Chat</h1>
+    <div class="chat-container">
+        <h1>Task Chat</h1>
+        <ul id="chatMessages" class="chat-box">
+            <li th:each="message : ${messages}" class="chat-item" th:id="'msg-container-' + ${message.id}">
+                <div class="message-header">
+                    <strong th:text="${message.user.email}"></strong> 
+                    <span class="message-time" th:text="${#dates.format(message.sentAt, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+                <div>
+                    <span class="chat-bubble" th:text="${message.message}" th:id="'msg-' + ${message.id}"></span>
+                </div>
 
-    <ul id="chatMessages">
-        <li th:each="message : ${messages}">
-            <strong th:text="${message.user.email}"></strong>: 
-            <span th:text="${message.message}"></span>
-            <small th:text="${#dates.format(message.sentAt, 'yyyy-MM-dd HH:mm')}"></small>
-        </li>
-    </ul>
+                <div class="translated-text" th:id="'translated-msg-' + ${message.id}"></div>
+                <div class="translation-section">
+                    <select th:id="'lang-' + ${message.id}">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                    <button class="translate-btn" th:attr="data-id=${message.id}">Translate</button>
+                </div>
+            </li>
+        </ul>
 
-    <form onsubmit="sendMessage(event)">
-        <input type="text" id="messageInput" required>
-        <button type="submit">Send</button>
-    </form>
+        <form onsubmit="sendMessage(event)">
+            <input type="text" id="messageInput" required>
+            <button type="submit">Send</button>
+        </form>
 
-    <br>
-    <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+        <br>
+        <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+    </div>
 
     <script>
         var taskId = "[[${taskId}]]";
@@ -34,17 +102,9 @@
         stompClient.connect({}, function(frame) {
             console.log("Connected: " + frame);
             stompClient.subscribe("/topic/chat/" + taskId, function(message) {
-                console.log("message received");
+                console.log("Message received");
                 var messageBody = JSON.parse(message.body);
-                
-                var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
-                var formattedTime = messageBody.sentAt ? new Date(messageBody.sentAt).toLocaleString() : "";
-    
-                var chatList = document.getElementById("chatMessages");
-                var newMessage = document.createElement("li");
-                newMessage.innerHTML = "<strong>" + senderEmail + ":</strong> " + messageBody.message +
-                    " <small>(" + formattedTime + ")</small>";
-                chatList.appendChild(newMessage);
+                addMessageToChat(messageBody);
             });
         });
     
@@ -60,6 +120,77 @@
                 }));
                 document.getElementById("messageInput").value = "";
             }
+        }
+    
+        function addMessageToChat(messageBody) {
+    var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
+    var formattedTime = formatTimestamp(messageBody.sentAt);
+
+    var chatList = document.getElementById("chatMessages");
+    var newMessage = document.createElement("li");
+    newMessage.classList.add("chat-item");
+    newMessage.id = "msg-container-" + messageBody.id;
+
+    newMessage.innerHTML = `
+        <div class="message-header">
+            <strong>${senderEmail}</strong> 
+            <span class="message-time">${formattedTime}</span>
+        </div>
+        <div>
+            <span class="chat-bubble" id="msg-${messageBody.id}">${messageBody.message}</span>
+        </div>
+
+        <!-- Translated Text Section -->
+        <div id="translated-msg-${messageBody.id}" class="translated-text" style="display: none;"></div>
+
+        <div class="translation-section">
+            <select id="lang-${messageBody.id}">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="zh">Chinese</option>
+            </select>
+            <button class="translate-btn" data-id="${messageBody.id}">Translate</button>
+        </div>
+    `;
+
+    chatList.appendChild(newMessage);
+}    
+
+            document.getElementById("chatMessages").addEventListener("click", function(event) {
+            if (event.target.classList.contains("translate-btn")) {
+                var messageId = event.target.getAttribute("data-id");
+                translateMessage(messageId);
+            }
+        });
+    
+        function translateMessage(messageId) {
+            var messageEl = document.getElementById("msg-" + messageId);
+            var translatedContainer = document.getElementById("translated-msg-" + messageId);
+            var language = document.getElementById("lang-" + messageId).value;
+
+            fetch("/translate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: messageEl.innerText, targetLanguage: language })
+            })
+            .then(response => response.json())
+            .then(data => {
+                translatedContainer.innerText = data.translatedText;
+                translatedContainer.style.display = "block"; 
+            })
+            .catch(error => console.error("Translation error:", error));
+        }
+    
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return "";
+            var dateObj = new Date(timestamp);
+            return dateObj.getFullYear() + "-" + 
+                    String(dateObj.getMonth() + 1).padStart(2, '0') + "-" + 
+                    String(dateObj.getDate()).padStart(2, '0') + " " + 
+                    String(dateObj.getHours()).padStart(2, '0') + ":" + 
+                    String(dateObj.getMinutes()).padStart(2, '0');
         }
     </script>
 </body>

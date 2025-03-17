@@ -25,7 +25,7 @@ public class ChatService {
         return taskOpt.map(chatRepository::findByTaskOrderBySentAtAsc).orElse(List.of());
     }
 
-    public void saveMessage(int taskId, User user, String message) {
+    public ChatMessage saveMessage(int taskId, User user, String message) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
         System.out.println("saving message in service");
         if (taskOpt.isPresent() && user != null) {
@@ -33,8 +33,8 @@ public class ChatService {
             chatMessage.setTask(taskOpt.get());
             chatMessage.setUser(user);
             chatMessage.setMessage(message);
-            chatRepository.save(chatMessage);
-        } 
-    }
-    
+            return chatRepository.save(chatMessage);
+        }
+        return null;
+    }    
 }
