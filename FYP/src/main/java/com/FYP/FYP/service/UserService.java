@@ -41,4 +41,8 @@ public class UserService {
     public void logoutUser() {
         session.invalidate();
     }
+
+    public Optional<User> findById(int id) {
+        return userRepository.findById(id);
+    }
 }

@@ -2,18 +2,21 @@
 <html>
 <head>
     <title>Create Project</title>
+    <link rel="stylesheet" href="/css/project.css">
 </head>
 <body>
-    <h1>Create a New Project</h1>
-    <form action="/projects/create" method="post">
-        <label for="name">Project Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <label for="description">Project Description:</label>
-        <textarea id="description" name="description" required></textarea>
-        <br>
-        <button type="submit">Create Project</button>
-    </form>
-    <a href="/dashboard">Back to Dashboard</a>
+    <div class="container">
+        <h1>Create a New Project</h1>
+        <form action="/projects/create" method="post">
+            <label for="name">Project Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Project Description:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <button type="submit">Create Project</button>
+        </form>
+        <a href="/dashboard" class="back-link">Back to Dashboard</a>
+    </div>
 </body>
 </html>

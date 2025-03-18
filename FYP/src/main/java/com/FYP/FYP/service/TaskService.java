@@ -74,23 +74,49 @@ public class TaskService {
         }
 
         Task task = taskOpt.get();
+        
+        String oldStatus = task.getStatus().name();
+        Date oldDueDate = task.getDueDate();
+        User oldAssignedUser = task.getAssignedTo();
+
+        boolean notify = false;
+
         task.setDescription(description);
-        task.setStatus(status);
-        task.setDueDate(dueDate);
+        
+        if (!task.getStatus().equals(status)) {
+            task.setStatus(status);
+            notificationService.createNotification(task.getAssignedTo(), "Task status updated: " + task.getTitle());
+            notify = true;
+        }
+
+        if (!oldDueDate.equals(dueDate)) {
+            task.setDueDate(dueDate);
+            notificationService.createNotification(task.getAssignedTo(), "Task deadline changed: " + task.getTitle());
+            notify = true;
+        }
 
         if (assignedTo != null) {
             Optional<User> userOpt = userRepository.findById(assignedTo);
-            userOpt.ifPresent(user -> {
-                task.setAssignedTo(user);
-                notificationService.createNotification(user, "You have been assigned to a task: " + task.getTitle());
-            });
+            if (userOpt.isPresent()) {
+                User newAssignedUser = userOpt.get();
+                task.setAssignedTo(newAssignedUser);
+
+                if (oldAssignedUser == null) {
+                    notificationService.createNotification(newAssignedUser, "You have been assigned to a task: " + task.getTitle());
+                    notify = true;
+                } else if (!oldAssignedUser.equals(newAssignedUser)) {
+                    notificationService.createNotification(newAssignedUser, "You have been reassigned to task: " + task.getTitle());
+                    notificationService.createNotification(oldAssignedUser, "Task reassigned to another user: " + task.getTitle());
+                    notify = true;
+                }
+            }
         }
 
-        if (task.getAssignedTo() != null) {
-            notificationService.createNotification(task.getAssignedTo(), "Task updated: " + task.getTitle());
+        if (notify) {
+            return taskRepository.save(task);
         }
 
-        return taskRepository.save(task);
+        return task;
     }
 
     public boolean deleteTask(int taskId) {

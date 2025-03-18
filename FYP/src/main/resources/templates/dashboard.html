@@ -2,48 +2,51 @@
 <html>
 <head>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-    <h1>Welcome, <span th:text="${user.email}"></span>!</h1>
+    <div class="dashboard-container">
+        <h1>Welcome, <span th:text="${user.email}"></span>!</h1>
 
-    <div th:if="${notifications != null and !notifications.isEmpty()}">
-        <h2>Notifications</h2>
-        <ul>
-            <li th:each="notification : ${notifications}">
-                <span th:text="${notification.message}"></span> - 
-                <small th:text="${#dates.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
-            </li>
-        </ul>
-        <form th:action="@{/notifications/mark-read}" method="post">
-            <button type="submit">Mark All as Read</button>
-        </form>
-    </div>
+        <div th:if="${notifications != null and !notifications.isEmpty()}" class="notification-box">
+            <h2>Notifications</h2>
+            <ul>
+                <li th:each="notification : ${notifications}">
+                    <span th:text="${notification.message}"></span> - 
+                    <small th:text="${#dates.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
+                </li>
+            </ul>
+            <form th:action="@{/notifications/mark-read}" method="post">
+                <button type="submit">Mark All as Read</button>
+            </form>
+        </div>
 
-    <div th:if="${notifications == null or notifications.isEmpty()}">
-        <h3>No new notifications</h3>
-    </div>
+        <div th:if="${notifications == null or notifications.isEmpty()}">
+            <h3>No new notifications</h3>
+        </div>
 
-    <div th:if="${!isInTeam}">
-        <h2>You are not part of a team yet!</h2>
-        <a href="/teams/create">Create a Team</a> or
-        <a href="/teams/join">Join an Existing Team</a>
-    </div>
+        <div th:if="${!isInTeam}">
+            <h2>You are not part of a team yet!</h2>
+            <a href="/teams/create">Create a Team</a> or
+            <a href="/teams/join">Join an Existing Team</a>
+        </div>
 
-    <div th:if="${isInTeam}">
-        <h2>Your Projects</h2>
-        <a href="/projects/create">
-            <button>Create New Project</button>
-        </a>
+        <div th:if="${isInTeam}">
+            <h2>Your Projects</h2>
+            <a href="/projects/create">
+                <button class="create-project-btn">Create New Project</button>
+            </a>
+            
+            <p th:if="${projects == null or projects.isEmpty()}">No projects available. Create one!</p>
         
-        <p th:if="${projects == null or projects.isEmpty()}">No projects available. Create one!</p>
+            <div class="project-list">
+                <a th:each="project : ${projects}" th:href="@{/projects/{id}(id=${project.id})}" class="project-item">
+                    <span th:text="${project.name}"></span>
+                </a>
+            </div>
+        </div>        
 
-        <ul>
-            <li th:each="project : ${projects}">
-                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>
-            </li>
-        </ul>
+        <a href="/logout" class="logout">Logout</a>
     </div>
-
-    <a href="/logout">Logout</a>
 </body>
 </html>

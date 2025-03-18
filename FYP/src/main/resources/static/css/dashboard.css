@@ -1,0 +1,141 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.dashboard-container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+h2 {
+    color: #007bff;
+    margin-top: 20px;
+}
+
+.notification-box {
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #e9ecef;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.logout {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    background-color: #dc3545;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.logout:hover {
+    background-color: #c82333;
+}
+
+.project-link {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.project-item {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.project-item:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.project-item {
+    display: block;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.project-item:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.create-project-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.create-project-btn:hover {
+    background-color: #218838;
+}

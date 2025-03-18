@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Task Chat</title>
+    <link rel="stylesheet" href="/css/chat.css">
     <script src="https://cdn.jsdelivr.net/sockjs/1.1.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
@@ -14,22 +15,32 @@
             max-width: 600px;
             margin: auto;
         }
-        .chat-bubble {
-            background-color: #e0e0e0;
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px; /* Ensures scrolling works */
+            overflow-y: auto;
             padding: 10px;
+            background: #fff;
             border-radius: 10px;
-            max-width: 80%;
-            margin-bottom: 10px;
-            position: relative;
-            display: inline-block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .chat-item {
-            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
             list-style: none;
             padding: 10px;
             border-radius: 10px;
-            background-color: #fff;
+            background-color: #e9ecef;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+        .chat-bubble {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            display: inline-block;
         }
         .translated-text {
             color: blue;
@@ -50,10 +61,6 @@
             display: flex;
             gap: 5px;
             margin-top: 5px;
-        }
-        .chat-box {
-            display: flex;
-            flex-direction: column;
         }
     </style>
 </head>
@@ -105,6 +112,7 @@
                 console.log("Message received");
                 var messageBody = JSON.parse(message.body);
                 addMessageToChat(messageBody);
+                scrollToBottom();
             });
         });
     
@@ -123,66 +131,72 @@
         }
     
         function addMessageToChat(messageBody) {
-    var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
-    var formattedTime = formatTimestamp(messageBody.sentAt);
+            var senderEmail = messageBody.user.email ? messageBody.user.email : "Unknown User";
+            var formattedTime = formatTimestamp(messageBody.sentAt);
 
-    var chatList = document.getElementById("chatMessages");
-    var newMessage = document.createElement("li");
-    newMessage.classList.add("chat-item");
-    newMessage.id = "msg-container-" + messageBody.id;
+            var chatList = document.getElementById("chatMessages");
+            var newMessage = document.createElement("li");
+            newMessage.classList.add("chat-item");
+            newMessage.id = "msg-container-" + messageBody.id;
 
-    newMessage.innerHTML = `
-        <div class="message-header">
-            <strong>${senderEmail}</strong> 
-            <span class="message-time">${formattedTime}</span>
-        </div>
-        <div>
-            <span class="chat-bubble" id="msg-${messageBody.id}">${messageBody.message}</span>
-        </div>
+            newMessage.innerHTML = `
+                <div class="message-header">
+                    <strong>${senderEmail}</strong> 
+                    <span class="message-time">${formattedTime}</span>
+                </div>
+                <div>
+                    <span class="chat-bubble" id="msg-${messageBody.id}">${messageBody.message}</span>
+                </div>
 
-        <!-- Translated Text Section -->
-        <div id="translated-msg-${messageBody.id}" class="translated-text" style="display: none;"></div>
+                <!-- Translated Text Section -->
+                <div id="translated-msg-${messageBody.id}" class="translated-text" style="display: none;"></div>
 
-        <div class="translation-section">
-            <select id="lang-${messageBody.id}">
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="zh">Chinese</option>
-            </select>
-            <button class="translate-btn" data-id="${messageBody.id}">Translate</button>
-        </div>
-    `;
+                <div class="translation-section">
+                    <select id="lang-${messageBody.id}">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                    <button class="translate-btn" data-id="${messageBody.id}">Translate</button>
+                </div>
+            `;
 
-    chatList.appendChild(newMessage);
-}    
-
+            chatList.appendChild(newMessage);
+            scrollToBottom();
+        }
             document.getElementById("chatMessages").addEventListener("click", function(event) {
             if (event.target.classList.contains("translate-btn")) {
                 var messageId = event.target.getAttribute("data-id");
                 translateMessage(messageId);
             }
         });
-    
+
         function translateMessage(messageId) {
             var messageEl = document.getElementById("msg-" + messageId);
+            if (!messageEl) {
+                console.error("Message element not found for id:", messageId);
+                return;
+            }
+            var messageText = messageEl.innerText;
+            var languageEl = document.getElementById("lang-" + messageId);
+            var language = languageEl.value;
             var translatedContainer = document.getElementById("translated-msg-" + messageId);
-            var language = document.getElementById("lang-" + messageId).value;
 
             fetch("/translate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: messageEl.innerText, targetLanguage: language })
+                body: JSON.stringify({ message: messageText, targetLanguage: language })
             })
             .then(response => response.json())
             .then(data => {
                 translatedContainer.innerText = data.translatedText;
-                translatedContainer.style.display = "block"; 
+                translatedContainer.style.display = "block";
             })
             .catch(error => console.error("Translation error:", error));
         }
-    
+
         function formatTimestamp(timestamp) {
             if (!timestamp) return "";
             var dateObj = new Date(timestamp);
@@ -192,6 +206,15 @@
                     String(dateObj.getHours()).padStart(2, '0') + ":" + 
                     String(dateObj.getMinutes()).padStart(2, '0');
         }
+
+        function scrollToBottom() {
+            var chatContainer = document.getElementById("chatMessages");
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        window.onload = function() {
+            scrollToBottom();
+        };
     </script>
 </body>
 </html>

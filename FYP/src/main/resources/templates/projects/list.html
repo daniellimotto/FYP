@@ -2,17 +2,22 @@
 <html>
 <head>
     <title>Project List</title>
+    <link rel="stylesheet" href="/css/project.css">
 </head>
 <body>
-    <h1>Your Projects</h1>
-    <a href="/projects/create">
-        <button>Create New Project</button>
-    </a>
-    <ul>
-        <li th:each="project : ${projects}">
-            <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>
-        </li>
-    </ul>
-    <a href="/dashboard">Back to Dashboard</a>
+    <div class="container">
+        <h1>Your Projects</h1>
+        <a href="/projects/create">
+            <button>Create New Project</button>
+        </a>
+
+        <ul class="project-list">
+            <li th:each="project : ${projects}" th:onclick="|window.location.href='/projects/${project.id}'|">
+                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.name}"></a>
+            </li>
+        </ul>
+
+        <a href="/dashboard" class="back-link">Back to Dashboard</a>
+    </div>
 </body>
 </html>

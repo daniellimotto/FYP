@@ -6,6 +6,7 @@ import com.FYP.FYP.model.User;
 import com.FYP.FYP.service.ProjectService;
 import com.FYP.FYP.service.TaskService;
 import com.FYP.FYP.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,18 +28,8 @@ public class ProjectController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
-    public String listProjects(Model model) {
-        User loggedInUser = userService.getLoggedInUser();
-
-        if (loggedInUser == null || loggedInUser.getTeam() == null) {
-            return "redirect:/dashboard";
-        }
-
-        List<Project> projects = projectService.getProjectsByTeam(loggedInUser.getTeam().getId());
-        model.addAttribute("projects", projects);
-        return "projects/list";
-    }
+    @Autowired
+    private HttpSession session;
 
     @GetMapping("/create")
     public String showCreateProjectForm(Model model) {
@@ -63,7 +54,10 @@ public class ProjectController {
             return "projects/create"; 
         }
 
-        return "redirect:/projects";
+        User updatedUser = userService.findById(loggedInUser.getId()).get();
+        session.setAttribute("loggedInUser", updatedUser);
+
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/{id}")
@@ -71,7 +65,7 @@ public class ProjectController {
         Optional<Project> projectOpt = projectService.getProjectById(id);
 
         if (projectOpt.isEmpty()) {
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         }
 
         Project project = projectOpt.get();

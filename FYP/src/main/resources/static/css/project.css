@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+a.back-link:hover {
+    text-decoration: underline;
+}
+
+.project-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.project-list li {
+    background: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.project-list li:hover {
+    transform: scale(1.02);
+    background-color: #f1f1f1;
+}
+
+.project-list a {
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.task-list li {
+    background: #eef;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.task-list a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.task-list span {
+    font-size: 14px;
+    color: gray;
+    margin-left: 10px;
+}
