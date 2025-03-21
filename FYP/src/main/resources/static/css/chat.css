@@ -126,3 +126,17 @@ select {
     background-color: #007bff;
     border-radius: 10px;
 }
+
+a {
+    display: inline-block;
+    margin-top: 0px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}

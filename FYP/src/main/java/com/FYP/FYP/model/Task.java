@@ -2,6 +2,9 @@ package com.FYP.FYP.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tasks")
@@ -24,7 +27,7 @@ public class Task {
     private Date dueDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false) // Ensures the value is only set once
+    @Column(updatable = false)
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,7 +41,10 @@ public class Task {
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
-    // Automatically set timestamps before saving
+    @JsonIgnore
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ChatMessage> chatMessages;
+    
     @PrePersist
     protected void onCreate() {
         createdAt = new Date();
@@ -50,7 +56,6 @@ public class Task {
         updatedAt = new Date();
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -113,5 +118,13 @@ public class Task {
 
     public void setAssignedTo(User assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
     }
 }

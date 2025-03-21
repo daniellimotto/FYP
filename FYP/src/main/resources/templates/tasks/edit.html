@@ -2,43 +2,41 @@
 <html>
 <head>
     <title>Edit Task</title>
+    <link rel="stylesheet" href="/css/tasks.css">
 </head>
 <body>
-    <h1>Edit Task: <span th:text="${task.title}"></span></h1>
+    <div class="container">
+        <h1>Edit Task: <span th:text="${task.title}"></span></h1>
 
-    <form th:action="@{/tasks/update/{taskId}(taskId=${task.id})}" method="post">
-        <label for="title">Task Title:</label>
-        <input type="text" id="title" name="title" th:value="${task.title}" required>
-        <br><br>
+        <form th:action="@{/tasks/update/{taskId}(taskId=${task.id})}" method="post">
+            <label for="title">Task Title:</label>
+            <input type="text" id="title" name="title" th:value="${task.title}" required>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" th:text="${task.description}" required></textarea>
-        <br><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" th:text="${task.description}" required></textarea>
 
-        <label for="status">Status:</label>
-        <select id="status" name="status">
-            <option value="TO_DO" th:selected="${task.status == 'TO_DO'}">To Do</option>
-            <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
-            <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
-        </select>
-        <br><br>
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+                <option value="TO_DO" th:selected="${task.status == 'TO_DO'}">To Do</option>
+                <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
+                <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
+            </select>
 
-        <label for="dueDate">Deadline:</label>
-        <input type="date" id="dueDate" name="dueDate" th:value="${#dates.format(task.dueDate, 'yyyy-MM-dd')}" required>
-        <br><br>
+            <label for="dueDate">Deadline:</label>
+            <input type="date" id="dueDate" name="dueDate" th:value="${#dates.format(task.dueDate, 'yyyy-MM-dd')}" required>
 
-        <label for="assignedTo">Assign To:</label>
-        <select id="assignedTo" name="assignedTo">
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}" 
-                th:selected="${task.assignedTo != null && task.assignedTo.id == user.id}">
-            </option>
-        </select>
-        <br><br>
+            <label for="assignedTo">Assign To:</label>
+            <select id="assignedTo" name="assignedTo">
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}" 
+                    th:selected="${task.assignedTo != null && task.assignedTo.id == user.id}">
+                </option>
+            </select>
 
-        <button type="submit">Update Task</button>
-    </form>
+            <button type="submit">Update Task</button>
+        </form>
 
-    <br>
-    <a th:href="@{/tasks/details/{taskId}(taskId=${task.id})}">Cancel</a>
+        <br>
+        <a th:href="@{/tasks/details/{taskId}(taskId=${task.id})}">Cancel</a>
+    </div>
 </body>
 </html>

@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Task Details</title>
+    <link rel="stylesheet" href="/css/tasks.css">
 </head>
 <body>
-    <h1>Task: <span th:text="${task.title}"></span></h1>
+    <div class="container">
+        <h1>Task: <span th:text="${task.title}"></span></h1>
 
-    <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
-    <p><strong>Status:</strong> <span th:text="${task.status}"></span></p>
-    <p><strong>Deadline:</strong> <span th:text="${task.dueDate}"></span></p>
-    <p><strong>Assigned To:</strong> <span th:if="${task.assignedTo != null}" th:text="${task.assignedTo.email}"></span></p>
+        <div class="task-details">
+            <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${task.status}"></span></p>
+            <p><strong>Deadline:</strong> <span th:text="${task.dueDate}"></span></p>
+            <p><strong>Assigned To:</strong> <span th:if="${task.assignedTo != null}" th:text="${task.assignedTo.email}"></span></p>
+        </div>
 
-    <a th:href="@{/tasks/chat/{taskId}(taskId=${task.id})}">
-        <button>Open Chat</button>
-    </a>    
+        <div class="button-group">
+            <a th:href="@{/tasks/chat/{taskId}(taskId=${task.id})}">
+                <button>Open Chat</button>
+            </a>    
 
-    <br>
-    <a th:href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
-        <button>Edit Task</button>
-    </a>
+            <a th:href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
+                <button>Edit Task</button>
+            </a>
 
-    <form th:action="@{/tasks/delete/{taskId}(taskId=${task.id})}" method="post">
-        <button type="submit" style="color: red;">Delete Task</button>
-    </form>
+            <form th:action="@{/tasks/delete/{taskId}(taskId=${task.id})}" method="post">
+                <button type="submit" class="delete-btn">Delete Task</button>
+            </form>
+        </div>
 
-    <br>
-    <a th:href="@{/projects/{projectId}(projectId=${task.project.id})}">Back to Project</a>
+        <a th:href="@{/projects/{projectId}(projectId=${task.project.id})}">Back to Project</a>
+    </div>
 </body>
+
 </html>
