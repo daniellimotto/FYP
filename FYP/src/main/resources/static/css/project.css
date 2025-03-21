@@ -123,3 +123,12 @@ a.back-link:hover {
     color: gray;
     margin-left: 10px;
 }
+
+.delete-btn {
+    background-color: #dc3545;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}

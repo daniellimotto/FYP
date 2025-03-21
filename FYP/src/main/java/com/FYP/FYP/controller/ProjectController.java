@@ -76,4 +76,15 @@ public class ProjectController {
 
         return "projects/details";
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteProject(@PathVariable int id) {
+        boolean deleted = projectService.deleteProject(id);
+        
+        if (deleted) {
+            return "redirect:/dashboard";
+        } else {
+            return "redirect:/dashboard";
+        }
+    }
 }
