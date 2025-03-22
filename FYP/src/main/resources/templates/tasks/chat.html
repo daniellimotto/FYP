@@ -8,39 +8,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-    <div class="chat-container">
-        <h1>Task Chat</h1>
-        <ul id="chatMessages" class="chat-box">
-            <li th:each="message : ${messages}" class="chat-item" th:id="'msg-container-' + ${message.id}">
-                <div class="message-header">
-                    <strong th:text="${message.user.email}"></strong> 
-                    <span class="message-time" th:text="${#dates.format(message.sentAt, 'yyyy-MM-dd HH:mm')}"></span>
-                </div>
-                <div>
-                    <span class="chat-bubble" th:text="${message.message}" th:id="'msg-' + ${message.id}"></span>
-                </div>
+    <div class="page-container">
+        <div class="chat-container">
+            <h1>Task Chat</h1>
+            <ul id="chatMessages" class="chat-box">
+                <li th:each="message : ${messages}" class="chat-item" th:id="'msg-container-' + ${message.id}">
+                    <div class="message-header">
+                        <strong th:text="${message.user.email}"></strong> 
+                        <span class="message-time" th:text="${#dates.format(message.sentAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                    <div>
+                        <span class="chat-bubble" th:text="${message.message}" th:id="'msg-' + ${message.id}"></span>
+                    </div>
 
-                <div class="translated-text" th:id="'translated-msg-' + ${message.id}"></div>
-                <div class="translation-section">
-                    <select th:id="'lang-' + ${message.id}">
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                        <option value="de">German</option>
-                        <option value="zh">Chinese</option>
-                    </select>
-                    <button class="translate-btn" th:attr="data-id=${message.id}">Translate</button>
-                </div>
-            </li>
-        </ul>
+                    <div class="translated-text" th:id="'translated-msg-' + ${message.id}"></div>
+                    <div class="translation-section">
+                        <select th:id="'lang-' + ${message.id}">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                        <button class="translate-btn" th:attr="data-id=${message.id}">Translate</button>
+                    </div>
+                </li>
+            </ul>
 
-        <form onsubmit="sendMessage(event)">
-            <input type="text" id="messageInput" required>
-            <button type="submit">Send</button>
-        </form>
+            <form onsubmit="sendMessage(event)">
+                <input type="text" id="messageInput" required>
+                <button type="submit">Send</button>
+            </form>
 
-        <br>
-        <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+            <br>
+            <a th:href="@{/tasks/details/{taskId}(taskId=${taskId})}">Back to Task</a>
+        </div>
+        
+        <div class="summary-container">
+            <h2>Discussion Summary</h2>
+            <div class="task-details-summary">
+                <p>
+                    <strong>Task:</strong> <span th:text="${task.title}"></span>
+                </p>
+                <p>
+                    <strong>Description:</strong> <span th:text="${task.description}"></span>
+                </p>
+                <p>
+                    <strong>Deadline:</strong> <span th:text="${#dates.format(task.dueDate, 'yyyy-MM-dd')}"></span>
+                </p>
+                <p>
+                    <strong>Assigned To:</strong> <span th:text="${task.assignedTo != null ? task.assignedTo.email : 'Unassigned'}"></span>
+                </p>
+                <p>
+                    <small>Last updated: <span th:text="${#dates.format(chatSummary.lastUpdated, 'yyyy-MM-dd HH:mm')}"></span></small>
+                </p>
+            </div>
+            <div class="summary-content" id="summaryContent" th:utext="${chatSummary.summary}"></div>
+            <button class="refresh-summary" onclick="refreshSummary()">Refresh Summary</button>
+        </div>
     </div>
 
     <script>
@@ -161,6 +186,21 @@
         function scrollToBottom() {
             var chatContainer = document.getElementById("chatMessages");
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function refreshSummary() {
+            fetch('/tasks/summary/' + taskId + '/refresh', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    document.getElementById('summaryContent').innerHTML = data.summary;
+                }
+            })
+            .catch(error => console.error('Error refreshing summary:', error));
         }
 
         window.onload = function() {

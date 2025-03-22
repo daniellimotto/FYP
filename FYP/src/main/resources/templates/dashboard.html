@@ -32,6 +32,10 @@
         </div>
 
         <div th:if="${isInTeam}">
+            <div class="team-info">
+                <h2>Your Team: <span th:text="${team.name}"></span></h2>
+            </div>
+            
             <h2>Your Projects</h2>
             <a href="/projects/create">
                 <button class="create-project-btn">Create New Project</button>

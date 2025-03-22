@@ -4,11 +4,14 @@ import com.FYP.FYP.model.Task;
 import com.FYP.FYP.model.TaskStatus;
 import com.FYP.FYP.model.Project;
 import com.FYP.FYP.model.User;
+import com.FYP.FYP.model.ChatSummary;
 import com.FYP.FYP.repository.TaskRepository;
 import com.FYP.FYP.repository.ProjectRepository;
 import com.FYP.FYP.repository.UserRepository;
+import com.FYP.FYP.repository.ChatSummaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +31,9 @@ public class TaskService {
 
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private ChatSummaryRepository chatSummaryRepository;
 
     public Task createTask(String title, String description, Date dueDate, int projectId) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
@@ -119,10 +125,18 @@ public class TaskService {
         return task;
     }
 
+    @Transactional
     public boolean deleteTask(int taskId) {
         Optional<Task> taskOpt = taskRepository.findById(taskId);
 
         if (taskOpt.isPresent()) {
+            Task task = taskOpt.get();
+            
+            Optional<ChatSummary> chatSummaryOpt = chatSummaryRepository.findByTask(task);
+            if (chatSummaryOpt.isPresent()) {
+                chatSummaryRepository.delete(chatSummaryOpt.get());
+            }
+            
             taskRepository.deleteById(taskId);
             return true;
         }

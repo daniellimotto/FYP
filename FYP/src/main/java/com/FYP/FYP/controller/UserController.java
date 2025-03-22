@@ -106,6 +106,7 @@ public class UserController {
             Team userTeam = latestUser.getTeam();
             List<?> projects = (userTeam.getProjects() != null) ? userTeam.getProjects() : List.of();
             model.addAttribute("projects", projects);
+            model.addAttribute("team", userTeam);
         }
     
         List<Notification> notifications = notificationService.getUnreadNotifications(latestUser);

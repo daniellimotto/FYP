@@ -140,3 +140,78 @@ a:hover {
     text-decoration: underline;
     color: #0056b3;
 }
+
+.page-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 90vh;
+}
+
+.chat-container {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.summary-container {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.summary-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 15px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.refresh-summary {
+    margin-top: 10px;
+    background-color: #28a745;
+}
+
+.refresh-summary:hover {
+    background-color: #218838;
+}
+
+.task-details-summary {
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #007bff;
+}
+
+.task-details-summary p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.task-details-summary small {
+    color: #6c757d;
+    display: block;
+    margin-top: 10px;
+    text-align: right;
+}
+
+/* Add specific styling for summary bullet points */
+.summary-content ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.summary-content li {
+    margin-bottom: 8px;
+}
