@@ -52,18 +52,41 @@ public class ChatGptService {
             contextBuilder.append("- ").append(message).append("\n");
         }
         
-        contextBuilder.append("\nPlease provide a concise summary of this task chat discussion. " +
-                "Format your response with the following structure:\n\n" +
-                "1. First line: The task header in this exact format: \"Task: [title]. Deadline: [deadline]. Assigned to: [assignee].\"\n" +
-                "2. Second line: Leave blank\n" +
-                "3. Then provide the discussion summary with bullet points, where each point attributes ideas to specific people.\n\n" +
-                "For example:\n" +
-                "Task: Database setup. Deadline: May 12, 2025. Assigned to: john.doe@example.com.\n\n" +
-                "• Jane suggested setting up a MySQL instance first\n" +
-                "• Bob proposed documenting the schema before implementation\n" +
-                "• Mary agreed to review the final database design\n\n" +
-                "Focus on main points, decisions made, and action items mentioned.");
-
+        contextBuilder.append(
+            "\nYou are an assistant that summarizes multilingual task discussions into concise English.\n\n" +
+            "Instructions:\n" +
+            "1. First, translate any non-English chat messages into natural-sounding English.\n" +
+            "2. Summarize the entire discussion by focusing on **key points, decisions, and actions**.\n" +
+            "3. **Create topic headers dynamically** based on the content of the discussion. Group related messages under these topics.\n" +
+            "4. **Do not include email addresses**—only use their **first name** (e.g., 'Bob', 'Jane').\n" +
+            "5. **Avoid unnecessary details** or repeated information that doesn’t contribute to decision-making or the action plan.\n" +
+            "6. Ensure that any **important suggestions, decisions, or actions** are captured, including scheduling, planning, or clarifications.\n" +
+            "7. Group similar ideas under topics based on their content, and make sure each bullet point includes the person's contribution.\n\n" +
+            "Summary Format:\n" +
+            "====================\n" +
+            "Discussion Summary:\n" +
+            "• <b>[Generated Topic]:</b>\n" +
+            "    - [Contribution from a person or action item].\n" +
+            "    - [Another contribution under the same topic].\n" +
+            "• <b>[Next Generated Topic]:</b>\n" +
+            "    - [Another person's input].\n" +
+            "    - [Any other important information].\n\n" +
+            "Example:\n" +
+            "====================\n" +
+            "Discussion Summary:\n" +
+            "• <b>Design Review:</b>\n" +
+            "    - Bob created the initial design mockups and plans to share them soon.\n" +
+            "    - Jane suggested simplifying the design further.\n" +
+            "    - Mary mentioned that the design is approved for implementation.\n" +
+            "• <b>UI Adjustments:</b>\n" +
+            "    - Bob recommended considering a mobile-first design approach.\n" +
+            "    - Mary proposed simplifying the user interface.\n" +
+            "• <b>Scheduling:</b>\n" +
+            "    - Bob suggested scheduling a design review meeting this week.\n" +
+            "    - Jane mentioned a possible time slot for the meeting.\n\n" +
+            "Please follow this format strictly. Translate first, then summarize. Focus on **key actions**, **decisions**, and **next steps**."
+        );
+                        
         Map<String, String> systemMessage = new HashMap<>();
         systemMessage.put("role", "system");
         systemMessage.put("content", "You are a helpful assistant that summarizes task-related discussions. Your summaries should be structured with a clear task header followed by bullet points that attribute ideas to their originators.");
@@ -104,12 +127,10 @@ public class ChatGptService {
             return "No summary available.";
         }
         
-        // First, check if the content already has proper formatting
         if (content.contains("• ") && content.contains("\n")) {
-            return content; // Already properly formatted
+            return content;
         }
         
-        // Extract the task header
         int headerEnd = content.indexOf("•");
         if (headerEnd == -1) {
             headerEnd = content.indexOf("-");
@@ -119,13 +140,11 @@ public class ChatGptService {
             String header = content.substring(0, headerEnd).trim();
             String bulletPoints = content.substring(headerEnd);
             
-            // Convert bullet points
             bulletPoints = bulletPoints.replace("• ", "\n• ")
                                       .replace(" •", "\n•")
                                       .replace(" - ", "\n• ")
                                       .replace("- ", "\n• ");
             
-            // Ensure there's a blank line between header and bullets
             if (!bulletPoints.startsWith("\n")) {
                 bulletPoints = "\n" + bulletPoints;
             }
@@ -133,16 +152,13 @@ public class ChatGptService {
             return header + bulletPoints;
         }
         
-        // If we can't identify the structure, use a simple approach
         String[] parts = content.split("\\. ");
         if (parts.length >= 4) {
             StringBuilder formatted = new StringBuilder();
-            // Format the header
             formatted.append(parts[0]).append(". ")
                      .append(parts[1]).append(". ")
                      .append(parts[2]).append(".\n\n");
             
-            // Format the summary section
             String summary = parts[3];
             String[] sentences = summary.split("\\. ");
             for (String sentence : sentences) {
