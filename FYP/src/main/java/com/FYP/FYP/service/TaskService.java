@@ -35,7 +35,7 @@ public class TaskService {
     @Autowired
     private ChatSummaryRepository chatSummaryRepository;
 
-    public Task createTask(String title, String description, Date dueDate, int projectId) {
+    public Task createTask(String title, String description, Date dueDate, int projectId, Integer assignedTo) {
         Optional<Project> projectOpt = projectRepository.findById(projectId);
 
         if (projectOpt.isEmpty()) {
@@ -49,9 +49,19 @@ public class TaskService {
         task.setDueDate(dueDate);
         task.setProject(projectOpt.get());
 
+        if (assignedTo != null) {
+            Optional<User> userOpt = userRepository.findById(assignedTo);
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                task.setAssignedTo(user);
+
+                notificationService.createNotification(user, "You have been assigned a new task: " + task.getTitle());
+            }
+        }
+
         return taskRepository.save(task);
     }
-
+    
     public List<Task> getTasksByProject(int projectId) {
         return taskRepository.findByProjectId(projectId);
     }

@@ -19,6 +19,15 @@
             <label for="dueDate">Due Date:</label>
             <input type="date" id="dueDate" name="dueDate" required>
 
+            <label for="assignedTo">Assign To:</label>
+            <select id="assignedTo" name="assignedTo" required>
+                <option value="">-- Select a user --</option>
+                <option th:each="user : ${users}" 
+                        th:value="${user.id}" 
+                        th:text="${user.email}">
+                </option>
+            </select>
+
             <button type="submit">Create Task</button>
         </form>
 

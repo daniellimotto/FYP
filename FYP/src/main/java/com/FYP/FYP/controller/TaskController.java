@@ -51,15 +51,18 @@ public class TaskController {
     @GetMapping("/create/{projectId}")
     public String showCreateTaskForm(@PathVariable int projectId, Model model) {
         model.addAttribute("projectId", projectId);
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
         return "tasks/create";
     }
 
     @PostMapping("/create/{projectId}")
     public String createTask(@PathVariable int projectId,
-                            @RequestParam String title,
-                            @RequestParam String description,
-                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate) {
-        taskService.createTask(title, description, dueDate, projectId);
+                             @RequestParam String title,
+                             @RequestParam String description,
+                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dueDate,
+                             @RequestParam Integer assignedTo) {
+        taskService.createTask(title, description, dueDate, projectId, assignedTo);
         return "redirect:/projects/" + projectId;
     }
 
